@@ -2,7 +2,7 @@
     <div>
         <div class="dropdown d-print-none">
             <a class="btn shadow-none" href="javascript:void(0);" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-lg"></i>
+                <i class="fas fa-ellipsis-v fa-lg" style="font-size: 1.5em"></i>
             </a>
 
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">

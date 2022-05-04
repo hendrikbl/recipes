@@ -2,12 +2,17 @@
 <template>
   <b-input-group>
     <b-input-group-prepend>
-      <b-button variant="outline-primary" class="py-0 px-2" size="sm" @click="valueChange(value - 1)">
+      <b-button
+        variant="outline-primary"
+        class="py-0 px-2"
+        size="sm"
+        @click="valueChange(value - 1)"
+      >
         <b-icon icon="dash" font-scale="1.6" />
       </b-button>
     </b-input-group-prepend>
 
-    <b-form-input
+    <!-- <b-form-input
       style="text-align: right; border-width: 0px; border: none; padding: 0px; padding-left: 0.5vw; padding-right: 8px; width: 50px"
       variant="outline-primary"
       :size="size"
@@ -17,10 +22,15 @@
       class="border-secondary text-center"
       number
       @update="valueChange"
-    />
+    /> -->
 
     <b-input-group-append>
-      <b-button variant="outline-primary" class="py-0 px-2" size="sm" @click="valueChange(value + 1)">
+      <b-button
+        variant="outline-primary"
+        class="py-0 px-2"
+        size="sm"
+        @click="valueChange(value + 1)"
+      >
         <b-icon icon="plus" font-scale="1.6" />
       </b-button>
     </b-input-group-append>
@@ -28,46 +38,45 @@
 </template>
 
 <script>
-import { BIcon, BIconDash, BIconPlus } from 'bootstrap-vue'
+import { BIcon, BIconDash, BIconPlus } from "bootstrap-vue";
 
 export default {
-  name: 'CustomInputSpinButton',
+  name: "CustomInputSpinButton",
 
   components: {
     BIcon,
 
     /* eslint-disable vue/no-unused-components */
     BIconDash,
-    BIconPlus
+    BIconPlus,
   },
 
   props: {
-
     size: {
       type: String,
       required: false,
-      default: 'md',
+      default: "md",
       validator: function (value) {
-        return ['sm', 'md', 'lg'].includes(value)
-      }
+        return ["sm", "md", "lg"].includes(value);
+      },
     },
 
     value: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
 
   methods: {
-    valueChange (newValue) {
+    valueChange(newValue) {
       if (newValue <= 0) {
-        this.$emit('input', 0)
+        this.$emit("input", 0);
       } else {
-        this.$emit('input', newValue)
+        this.$emit("input", newValue);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -80,7 +89,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 </style>
