@@ -93,6 +93,7 @@
             :ingredient_factor="ingredient_factor"
             :servings="servings"
             :header="true"
+            id="ingredient_container"
             @checked-state-changed="updateIngredientCheckedState"
             @change-servings="servings = $event"
           />
@@ -107,6 +108,7 @@
               <nutrition-component
                 :recipe="recipe"
                 :ingredient_factor="ingredient_factor"
+                id="nutrition_container"
               />
             </div>
           </div>
@@ -212,28 +214,35 @@ export default {
     ingredient_count() {
       return this.recipe?.steps.map((x) => x.ingredients).flat().length;
     },
-    data() {
-      return {
-        loading: true,
-        recipe: undefined,
-        rootrecipe: undefined,
-        servings: 1,
-        servings_cache: {},
-        start_time: "",
-        share_uid: window.SHARE_UID,
-        wake_lock: null,
-        ingredient_height: "250",
-      };
+  },
+  data() {
+    return {
+      loading: true,
+      recipe: undefined,
+      rootrecipe: undefined,
+      servings: 1,
+      servings_cache: {},
+      start_time: "",
+      share_uid: window.SHARE_UID,
+      wake_lock: null,
+      ingredient_height: "250",
+    };
+  },
+  watch: {
+    servings(newVal, oldVal) {
+      this.servings_cache[this.recipe.id] = this.servings;
     },
   },
   mounted() {
     this.loadRecipe(window.RECIPE_ID);
     this.$i18n.locale = window.CUSTOM_LOCALE;
     this.requestWakeLock();
+    window.addEventListener("resize", this.handleResize);
   },
   beforeUnmount() {
     this.destroyWakeLock();
   },
+
   methods: {
     requestWakeLock: async function () {
       if ("wakeLock" in navigator) {
@@ -245,117 +254,62 @@ export default {
         }
       }
     },
-    mounted() {
-      this.loadRecipe(window.RECIPE_ID);
-      this.$i18n.locale = window.CUSTOM_LOCALE;
-      this.requestWakeLock();
-      window.addEventListener("resize", this.handleResize);
+    handleResize: function () {
+      if (document.getElementById("nutrition_container") !== null) {
+        this.ingredient_height =
+          document.getElementById("ingredient_container").clientHeight -
+          document.getElementById("nutrition_container").clientHeight;
+      } else {
+        this.ingredient_height = document.getElementById(
+          "ingredient_container"
+        ).clientHeight;
+      }
+    },
+    destroyWakeLock: function () {
+      if (this.wake_lock != null) {
+        this.wake_lock.release().then(() => {
+          this.wake_lock = null;
+        });
+      }
+
+      document.removeEventListener("visibilitychange", this.visibilityChange);
     },
     visibilityChange: async function () {
       if (this.wake_lock != null && document.visibilityState === "visible") {
         await this.requestWakeLock();
       }
     },
-    methods: {
-      requestWakeLock: async function () {
-        if ("wakeLock" in navigator) {
-          try {
-            this.wake_lock = await navigator.wakeLock.request("screen");
-            document.addEventListener(
-              "visibilitychange",
-              this.visibilityChange
-            );
-          } catch (err) {
-            console.log(err);
-          }
-        }
-      },
-      handleResize: function () {
-        if (document.getElementById("nutrition_container") !== null) {
-          this.ingredient_height =
-            document.getElementById("ingredient_container").clientHeight -
-            document.getElementById("nutrition_container").clientHeight;
-        } else {
-          this.ingredient_height = document.getElementById(
-            "ingredient_container"
-          ).clientHeight;
-        }
-      },
-      destroyWakeLock: function () {
-        if (this.wake_lock != null) {
-          this.wake_lock.release().then(() => {
-            this.wake_lock = null;
-          });
+    loadRecipe: function (recipe_id) {
+      apiLoadRecipe(recipe_id).then((recipe) => {
+        if (window.USER_SERVINGS !== 0) {
+          recipe.servings = window.USER_SERVINGS;
         }
 
-        document.removeEventListener("visibilitychange", this.visibilityChange);
-      },
-      visibilityChange: async function () {
-        if (this.wake_lock != null && document.visibilityState === "visible") {
-          await this.requestWakeLock();
-        }
-      },
-      loadRecipe: function (recipe_id) {
-        apiLoadRecipe(recipe_id).then((recipe) => {
-          if (window.USER_SERVINGS !== 0) {
-            recipe.servings = window.USER_SERVINGS;
-          }
-
-          let total_time = 0;
-          for (let step of recipe.steps) {
-            for (let ingredient of step.ingredients) {
-              this.$set(ingredient, "checked", false);
-            }
-
-            step.time_offset = total_time;
-            total_time += step.time;
-          }
-
-          // set start time only if there are any steps with timers (otherwise no timers are rendered)
-          if (total_time > 0) {
-            this.start_time = moment().format("yyyy-MM-DDTHH:mm");
-          }
-          if (recipe.image === null) this.printReady();
-
-          this.recipe = this.rootrecipe = recipe;
-          this.servings = this.servings_cache[this.rootrecipe.id] =
-            recipe.servings;
-          this.loading = false;
-
-          setTimeout(() => {
-            this.handleResize();
-          }, 100);
-        });
-      },
-      updateStartTime: function (e) {
-        this.start_time = e;
-      },
-      updateIngredientCheckedState: function (e) {
-        for (let step of this.recipe.steps) {
+        let total_time = 0;
+        for (let step of recipe.steps) {
           for (let ingredient of step.ingredients) {
-            if (ingredient.id === e.id) {
-              this.$set(ingredient, "checked", !ingredient.checked);
-            }
+            this.$set(ingredient, "checked", false);
           }
+
+          step.time_offset = total_time;
+          total_time += step.time;
         }
-      },
-      quickSwitch: function (e) {
-        if (e === -1) {
-          this.recipe = this.rootrecipe;
-          this.servings = this.servings_cache[this.rootrecipe?.id ?? 1];
-        } else {
-          this.recipe = e;
-          this.servings = this.servings_cache?.[e.id] ?? e.servings;
+
+        // set start time only if there are any steps with timers (otherwise no timers are rendered)
+        if (total_time > 0) {
+          this.start_time = moment().format("yyyy-MM-DDTHH:mm");
         }
-      },
-      printReady: function () {
-        const template = document.createElement("template");
-        template.id = "printReady";
-        document.body.appendChild(template);
-      },
-      onImgLoad: function () {
-        this.printReady();
-      },
+        if (recipe.image === null) this.printReady();
+
+        this.recipe = this.rootrecipe = recipe;
+        this.servings = this.servings_cache[this.rootrecipe.id] =
+          recipe.servings;
+        this.loading = false;
+
+        setTimeout(() => {
+          this.handleResize();
+        }, 100);
+      });
     },
     updateStartTime: function (e) {
       this.start_time = e;

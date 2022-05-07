@@ -12,18 +12,6 @@
       </b-button>
     </b-input-group-prepend>
 
-    <!-- <b-form-input
-      style="text-align: right; border-width: 0px; border: none; padding: 0px; padding-left: 0.5vw; padding-right: 8px; width: 50px"
-      variant="outline-primary"
-      :size="size"
-      :value="value"
-      type="number"      
-      min="0"
-      class="border-secondary text-center"
-      number
-      @update="valueChange"
-    /> -->
-
     <b-input-group-append>
       <b-button
         variant="outline-primary"
@@ -45,7 +33,6 @@ export default {
 
   components: {
     BIcon,
-
     /* eslint-disable vue/no-unused-components */
     BIconDash,
     BIconPlus,
