@@ -4,39 +4,71 @@
       <div class="row" v-if="header">
         <div class="col col-6">
           <h4 class="card-title">
-            <i class="fas fa-pepper-hot" />
             {{ $t("Ingredients") }}
           </h4>
         </div>
 
         <div class="col col-6 text-right" v-if="header">
-          <h4 class="card-title">
-            <i
-              v-if="show_shopping && ShoppingRecipes.length > 0"
-              class="fas fa-trash text-danger px-2"
-              @click="saveShopping(true)"
-            />
-            <i
-              v-if="show_shopping"
-              class="fas fa-save text-success px-2"
-              @click="saveShopping()"
-            />
-            <i class="fas fa-shopping-cart px-2" @click="getShopping()" />
+          <h4 class="card-title d-flex flex-row justify-content-end">
+            <div>
+              <b-input-group>
+                <b-input-group-prepend>
+                  <b-button
+                    v-if="show_shopping && ShoppingRecipes.length > 0"
+                    variant="outline-primary"
+                    size="sm"
+                    class="py-1 px-3"
+                    @click="saveShopping(true)"
+                  >
+                    <i class="fas fa-trash text-danger" />
+                  </b-button>
+
+                  <b-button
+                    v-if="show_shopping"
+                    variant="outline-primary"
+                    size="sm"
+                    class="py-1 px-3"
+                    @click="saveShopping()"
+                  >
+                    <i class="fas fa-save text-success" />
+                  </b-button>
+                </b-input-group-prepend>
+
+                <b-input-group-append v-if="show_shopping">
+                  <b-button
+                    variant="outline-primary"
+                    size="sm"
+                    class="py-1 px-3"
+                    @click="getShopping()"
+                  >
+                    <i class="fas fa-times" />
+                  </b-button>
+                </b-input-group-append>
+
+                <b-button
+                  v-else
+                  variant="outline-primary"
+                  size="sm"
+                  class="py-1 px-3"
+                  @click="getShopping()"
+                >
+                  <i class="fas fa-shopping-cart" />
+                </b-button>
+              </b-input-group>
+            </div>
           </h4>
         </div>
       </div>
-      <div class="row mt-2" v-if="header">
+
+      <div class="row" v-if="header">
         <div class="col col-6">
-          <h4 class="card-title">
-            <!-- <i class="fas fa-pizza-slice" /> -->
-            <div>
-              <span class="mr-1">{{ local_servings }}</span>
-              <span v-if="recipe.servings_text === ''">
-                {{ $t("Servings") }}
-              </span>
-              <span v-else>{{ recipe.servings_text }}</span>
-            </div>
-          </h4>
+          <div class="card-subtitle mt-1">
+            <span class="mr-1">{{ local_servings }}</span>
+            <span v-if="recipe.servings_text === ''">
+              {{ $t("Servings") }}
+            </span>
+            <span v-else>{{ recipe.servings_text }}</span>
+          </div>
         </div>
         <div class="col col-6 text-right">
           <div class="d-flex flex-row justify-content-end">
@@ -46,6 +78,7 @@
           </div>
         </div>
       </div>
+
       <div
         class="row text-right"
         v-if="ShoppingRecipes.length > 1 && !add_shopping_mode"
@@ -58,7 +91,9 @@
           />
         </div>
       </div>
+
       <br v-if="header" />
+
       <div class="row no-gutter">
         <div class="col-md-12">
           <table class="table table-sm">

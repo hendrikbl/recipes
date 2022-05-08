@@ -4,39 +4,30 @@
     <b-input-group-prepend>
       <b-button
         variant="outline-primary"
-        class="py-0 px-2"
-        size="sm"
+        class="py-1 px-3"
+        :size="size"
         @click="valueChange(value - 1)"
       >
-        <b-icon icon="dash" font-scale="1.6" />
+        <i class="fas fa-minus" />
       </b-button>
     </b-input-group-prepend>
 
     <b-input-group-append>
       <b-button
         variant="outline-primary"
-        class="py-0 px-2"
-        size="sm"
+        class="py-1 px-3"
+        :size="size"
         @click="valueChange(value + 1)"
       >
-        <b-icon icon="plus" font-scale="1.6" />
+        <i class="fas fa-plus" />
       </b-button>
     </b-input-group-append>
   </b-input-group>
 </template>
 
 <script>
-import { BIcon, BIconDash, BIconPlus } from "bootstrap-vue";
-
 export default {
   name: "CustomInputSpinButton",
-
-  components: {
-    BIcon,
-    /* eslint-disable vue/no-unused-components */
-    BIconDash,
-    BIconPlus,
-  },
 
   props: {
     size: {
@@ -67,16 +58,4 @@ export default {
 </script>
 
 <style scoped>
-/* Remove up and down arrows inside number input */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-}
 </style>

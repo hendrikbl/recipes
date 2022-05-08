@@ -20,16 +20,7 @@
           />
 
           <img
-            class="rounded"
-            style="
-              object-fit: cover;
-              width: 100%;
-              top: 0;
-              position: absolute;
-              height: 100%;
-              left: 0;
-              display: block;
-            "
+            class="recipe-header-image"
             :src="recipe.image"
             :alt="$t('Recipe_Image')"
             v-if="recipe.image !== null"
@@ -62,25 +53,19 @@
       </div>
 
       <hr />
-      <div class="row">
-        <div class="col col-6 text-center">
-          <div class="row d-flex flex-column">
-            <span class="text-primary my-2">
-              <b>{{ recipe.working_time }} {{ $t("min") }}</b>
-            </span>
-            {{ $t("Preparation") }}
-            <br />
-          </div>
+      <div class="row d-flex flex-row justify-content-around flex-nowrap">
+        <div class="d-flex flex-row justify-content-center flex-wrap mx-5">
+          <span class="text-primary mx-2">
+            <b>{{ recipe.working_time }} {{ $t("min") }}</b>
+          </span>
+          <span>{{ $t("Preparation") }}</span>
         </div>
 
-        <div class="col col-6 text-center">
-          <div class="row d-flex flex-column">
-            <span class="text-primary my-2">
-              <b>{{ recipe.waiting_time }} {{ $t("min") }}</b>
-            </span>
-            {{ $t("Waiting") }}
-            <br />
-          </div>
+        <div class="d-flex flex-row justify-content-center flex-wrap mx-5">
+          <span class="text-primary mx-2">
+            <b>{{ recipe.waiting_time }} {{ $t("min") }}</b>
+          </span>
+          <span>{{ $t("Waiting") }}</span>
         </div>
       </div>
       <hr />
@@ -347,5 +332,21 @@ export default {
 <style>
 #app > div > div {
   break-inside: avoid;
+}
+
+.recipe-header-image {
+  object-fit: cover;
+  width: 100%;
+  top: 0;
+  position: absolute;
+  height: 100%;
+  left: 0;
+  display: block;
+}
+
+@media (min-width: 992px) {
+  .recipe-header-image {
+    border-radius: 0.25rem;
+  }
 }
 </style>
