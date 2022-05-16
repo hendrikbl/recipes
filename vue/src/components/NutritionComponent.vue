@@ -1,77 +1,55 @@
 <template>
-
   <div v-if="recipe.nutrition !== null">
-    <div class="card border-success">
-
+    <div class="card">
       <div class="card-body">
         <div class="row">
-          <div class="col-12">
-            <h4 class="card-title"><i class="fas fa-carrot"></i> {{ $t('Nutrition') }}</h4>
+          <div
+            v-for="col in columns"
+            :key="col.label"
+            class="col-6 col-md-3 mb-3"
+          >
+            <div class="d-flex flex-column justify-content-center text-center">
+              <b class="text-primary">{{ col.value }}</b>
+              {{ $t(col.label) }}
+            </div>
           </div>
         </div>
-
-        <div class="row">
-          <div class="col-6">
-            <i class="fas fa-fire fa-fw text-primary"></i> {{ $t(energy()) }}
-          </div>
-          <div class="col-6">
-            <span v-html="calculateEnergy(recipe.nutrition.calories)"></span>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6">
-            <i class="fas fa-bread-slice fa-fw text-primary"></i> {{ $t('Carbohydrates') }}
-          </div>
-          <div class="col-6">
-            <span v-html="calculateAmount(recipe.nutrition.carbohydrates)"></span>  g
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6">
-            <i class="fas fa-cheese fa-fw text-primary"></i> {{ $t('Fats') }}
-          </div>
-          <div class="col-6">
-            <span v-html="calculateAmount(recipe.nutrition.fats)"></span> g
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6">
-            <i class="fas fa-drumstick-bite fa-fw text-primary"></i> {{ $t('Proteins') }}
-          </div>
-          <div class="col-6">
-            <span v-html="calculateAmount(recipe.nutrition.proteins)"></span> g
-          </div>
-        </div>
-      </div>
-
       </div>
     </div>
-
+  </div>
 </template>
 
 <script>
-
-import {calculateAmount, calculateEnergy, energyHeading} from "@/utils/utils";
+import { calculateAmount, calculateEnergy, energyHeading } from "@/utils/utils";
 
 export default {
-  name: 'NutritionComponent',
+  name: "NutritionComponent",
   props: {
     recipe: Object,
     ingredient_factor: Number,
   },
-  methods: {
-    calculateAmount: function (x) {
-      return calculateAmount(x, this.ingredient_factor)
+  computed: {
+    columns() {
+      const { calories, carbohydrates, fats, proteins } = this.recipe.nutrition;
+      return [
+        {
+          value: calculateEnergy(calories, this.ingredient_factor),
+          label: energyHeading(),
+        },
+        {
+          value: calculateAmount(carbohydrates, this.ingredient_factor),
+          label: "Carbohydrates",
+        },
+        {
+          value: calculateAmount(fats, this.ingredient_factor),
+          label: "Fats",
+        },
+        {
+          value: calculateAmount(proteins, this.ingredient_factor),
+          label: "Proteins",
+        },
+      ];
     },
-    calculateEnergy: function (x) {
-      return calculateEnergy(x, this.ingredient_factor)
-    },
-    energy: function (x) {
-      return energyHeading()
-    }
-  }
-}
+  },
+};
 </script>

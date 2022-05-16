@@ -71,7 +71,7 @@
       <hr />
 
       <div class="row">
-        <div class="col-12 order-2" v-if="recipe && ingredient_count > 0">
+        <div class="col-12" v-if="recipe && ingredient_count > 0">
           <ingredients-card
             :recipe="recipe"
             :steps="recipe.steps"
@@ -84,11 +84,8 @@
           />
         </div>
 
-        <div
-          class="col-12 order-1 col-sm-12 order-sm-1 col-md-6 order-md-2"
-          v-if="recipe.nutrition !== null"
-        >
-          <div class="row" style="margin-top: 2vh; margin-bottom: 2vh">
+        <div class="col-12" v-if="recipe.nutrition !== null">
+          <div class="row my-3">
             <div class="col-12">
               <nutrition-component
                 :recipe="recipe"
