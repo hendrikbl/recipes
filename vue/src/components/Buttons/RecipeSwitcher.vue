@@ -217,7 +217,7 @@ export default {
     border-radius: 35px;
     font-size: 24px;
     line-height: 1.33;
-    z-index: 9000;
+    z-index: 1000;
 }
 
 

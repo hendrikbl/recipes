@@ -12,11 +12,19 @@
 
       <div class="row mb-4">
         <div class="col-12" style="height: 30vh">
+          <a
+            class="btn shadow-none d-print-none"
+            role="button"
+            style="z-index: 300; position: absolute; right: 0; cursor: pointer"
+            @click="show_context_menu = !show_context_menu"
+          >
+            <i class="fas fa-ellipsis-v fa-lg" style="font-size: 1.5em" />
+          </a>
           <recipe-context-menu
+            :visible="show_context_menu"
             :recipe="recipe"
             :servings="servings"
-            class="my-2"
-            style="z-index: 300; position: absolute; right: 0"
+            @close="show_context_menu = false"
           />
 
           <img
@@ -208,11 +216,15 @@ export default {
       share_uid: window.SHARE_UID,
       wake_lock: null,
       ingredient_height: "250",
+      show_context_menu: false,
     };
   },
   watch: {
     servings(newVal, oldVal) {
       this.servings_cache[this.recipe.id] = this.servings;
+    },
+    show_context_menu(newVal, oldVal) {
+      document.body.classList.toggle("bottom-sheet-open", newVal);
     },
   },
   mounted() {
@@ -345,5 +357,9 @@ export default {
   .recipe-header-image {
     border-radius: 0.25rem;
   }
+}
+
+.bottom-sheet-open {
+  overflow: hidden;
 }
 </style>

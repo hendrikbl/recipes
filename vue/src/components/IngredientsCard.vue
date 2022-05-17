@@ -8,7 +8,7 @@
           </h4>
         </div>
 
-        <div class="col col-6 text-right" v-if="header">
+        <div class="col col-6 text-right d-print-none" v-if="header">
           <h4 class="card-title d-flex flex-row justify-content-end">
             <div>
               <b-input-group>
@@ -70,7 +70,7 @@
             <span v-else>{{ recipe.servings_text }}</span>
           </div>
         </div>
-        <div class="col col-6 text-right">
+        <div class="col col-6 text-right d-print-none">
           <div class="d-flex flex-row justify-content-end">
             <div>
               <CustomInputSpinButton v-model.number="local_servings" />
